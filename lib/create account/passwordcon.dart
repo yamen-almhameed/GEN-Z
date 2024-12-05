@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_99/create%20account/getcontroller.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class Passwordcon extends StatelessWidget {
   final RegistrationController controller = Get.find<RegistrationController>();

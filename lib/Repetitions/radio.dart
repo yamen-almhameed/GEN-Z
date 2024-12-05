@@ -8,10 +8,10 @@ class GenderRadio extends StatelessWidget {
   final String title;
   final String value;
   GenderRadio({
-    Key? key,
+    super.key,
     this.title = "Male",
     this.value = "Male",
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -19,7 +19,7 @@ class GenderRadio extends StatelessWidget {
         () => ListTile(
           title: Text(
             title,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           leading: Radio<String>(
             value: value,

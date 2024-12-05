@@ -3,7 +3,7 @@ import 'package:flutter_application_99/Repetitions/appbar.dart';
 import 'package:flutter_application_99/Repetitions/appbar2.dart';
 import 'package:flutter_application_99/Repetitions/iconbar.dart';
 import 'package:flutter_application_99/Repetitions/listviewimage.dart';
-import 'package:flutter_application_99/buttonset.dart';
+import 'package:flutter_application_99/menu_fillter.dart';
 
 class FilterEventsScreen extends StatelessWidget {
   const FilterEventsScreen({super.key});
@@ -39,7 +39,7 @@ class FilterEventsScreen extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(Icons.menu),
                         ),
-                        Text(
+                        const Text(
                           'GEN-Z ',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -61,7 +61,7 @@ class FilterEventsScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(
+              const Divider(
                 color: Color(0xff65625E),
                 thickness: 2,
               ),
@@ -72,7 +72,7 @@ class FilterEventsScreen extends StatelessWidget {
                       top: screenHeight * 0.05,
                       right: screenWidth * 0.5,
                     ),
-                    child: Text(
+                    child: const Text(
                       "Filter Events",
                       style: TextStyle(
                           color: Color(0xff65625E),
@@ -118,7 +118,6 @@ class FilterEventsScreen extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: const CustomBottomAppBar(),
       ),
     );
   }

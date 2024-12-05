@@ -8,12 +8,12 @@ class Txtfiled extends StatelessWidget {
   final bool pass;
 
   const Txtfiled({
-    Key? key,
+    super.key,
     this.label = "Email",
     this.size = const Size(200, 50),
     this.text = "Please enter your first name",
     this.pass = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

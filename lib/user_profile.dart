@@ -1,36 +1,60 @@
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_99/Repetitions/appbar.dart';
-import 'package:flutter_application_99/Repetitions/iconbar.dart';
+import 'package:flutter_application_99/SetProfilePicture.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String? _imageUrl;
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Fetching the screen dimensions for responsive design
+    final user = Supabase.instance.client.auth.currentUser;
     final screenHeight = MediaQuery.sizeOf(context).height;
     final screenWidth = MediaQuery.sizeOf(context).width;
+    String name = user?.userMetadata?['full_name'] ?? "No name found";
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
           body: ListView(
-            padding: const EdgeInsets.all(16), // Consistent padding
+            padding: const EdgeInsets.all(16),
             children: [
               Column(
                 children: [
-                  const Appbar(),
-                  const CircleAvatar(
-                    radius: 70,
-                    // backgroundImage: AssetImage("assets/imgs/profile.jpeg"),requiset firebase storage
+                  SetProfilePicture(
+                    imageUrl: _imageUrl ?? '',
+                    onUpload: (imageUrl) async {
+                      setState(() {
+                        _imageUrl = imageUrl;
+                      });
+                      final userId = FirebaseAuth.instance.currentUser!.uid;
+                      await Supabase.instance.client.from('profile').update({
+                        'avatar_url': imageUrl,
+                      }).eq('id', userId);
+                    },
                   ),
                   SizedBox(height: screenHeight * 0.02),
-                  const FittedBox(
+                  FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "Asem Alkurdi",
-                      style: TextStyle(
+                      "$name",
+                      style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
@@ -53,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     color: const Color(0xffE6F3F3),
-                    height: screenHeight * 0.07, // Responsive height
+                    height: screenHeight * 0.07,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -66,7 +90,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             SizedBox(width: screenWidth * 0.02),
                             const Text(
-                              "  Ma'an Station, Ma'an",
+                              "  Ma’an Station, Ma’an",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -84,29 +108,28 @@ class ProfileScreen extends StatelessWidget {
                             const Text(
                               "33 Points",
                               style: TextStyle(fontWeight: FontWeight.bold),
-                            ), //getbuilder()
+                            ),
                           ],
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.02),
-                  // Hours and Requests
                   Container(
                     padding:
                         EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                     decoration: const BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                      Color(0xFFebe9f2),
-                      Color(0xFFfaead6),
-                    ])),
-                    height: screenHeight * 0.1, // Responsive height
+                      gradient: LinearGradient(colors: [
+                        Color(0xFFebe9f2),
+                        Color(0xFFfaead6),
+                      ]),
+                    ),
+                    height: screenHeight * 0.1,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const FittedBox(
-                          fit: BoxFit
-                              .scaleDown, // Adjust text based on available space
+                          fit: BoxFit.scaleDown,
                           child: Text(
                             "Hours Completed: 03\nRequests: 00",
                             style: TextStyle(
@@ -120,38 +143,30 @@ class ProfileScreen extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            minimumSize: Size(screenWidth * 0.3,
-                                screenHeight * 0.05), // Dynamic button size
+                            minimumSize:
+                                Size(screenWidth * 0.3, screenHeight * 0.05),
                           ),
-                          onPressed: () {
-                            // Add hours or requests action
-                          },
+                          onPressed: () {},
                           child: const Text("Add"),
                         ),
                       ],
                     ),
                   ),
-
-                  SizedBox(
-                      height:
-                          screenHeight * 0.02), // Space before the card section
+                  SizedBox(height: screenHeight * 0.02),
                   const Text("Completed Activity",
                       style: TextStyle(fontSize: 30)),
-                  const SizedBox(height: 50), // Space before the card section
-
-                  // Horizontally Scrollable Cards
+                  const SizedBox(height: 50),
                   SizedBox(
-                    height:
-                        screenHeight * 0.25, // Adjust card height dynamically
+                    height: screenHeight * 0.25,
                     child: ListView.builder(
-                      scrollDirection: Axis.horizontal, // Horizontal scrolling
-                      itemCount: 5, //هون لازم counter يستقبله من فير بيس
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5, // Replace with dynamic data
                       itemBuilder: (context, index) {
                         return Container(
-                          width: screenWidth * 0.5, // Responsive card width
+                          width: screenWidth * 0.5,
                           margin: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(colors: [
+                            gradient: const LinearGradient(colors: [
                               Color(0xFFebe9f2),
                               Color(0xFFfaead6),
                             ]),
@@ -161,41 +176,35 @@ class ProfileScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const CircleAvatar(
-                                radius: 55, // Keep the avatar size fixed
-                                // backgroundImage:
-                                //      AssetImage("assets/imgs/logo.png"),
+                                radius: 55,
                               ),
                               const SizedBox(height: 10),
                               const Text(
                                 'Org name',
                                 style: TextStyle(
-                                    fontFamily: 'Arial',
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: -0.04,
-                                    color: Colors.black),
+                                  fontFamily: 'Arial',
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.04,
+                                  color: Colors.black,
+                                ),
                               ),
                               const SizedBox(height: 10),
                               ElevatedButton(
-                                onPressed: () {
-                                  // قم بوضع الكود الخاص بك هنا
-                                },
+                                onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  padding:
-                                      EdgeInsets.zero, // إزالة الحشوة تمامًا
+                                  padding: EdgeInsets.zero,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(40),
                                   ),
-                                  splashFactory: NoSplash
-                                      .splashFactory, // لإزالة تأثير الضغط
+                                  splashFactory: NoSplash.splashFactory,
                                   shadowColor: Colors.transparent,
                                   elevation: 0,
-                                  backgroundColor: Colors
-                                      .transparent, // إزالة الخلفية الافتراضية
+                                  backgroundColor: Colors.transparent,
                                 ),
                                 child: Ink(
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
+                                    gradient: const LinearGradient(
                                       colors: [
                                         Color(0xFFebe9f2),
                                         Color(0xFFfaead6),
@@ -226,8 +235,6 @@ class ProfileScreen extends StatelessWidget {
               ),
             ],
           ),
-          // Footer Section
-          bottomNavigationBar: const CustomBottomAppBar(),
         ),
       ),
     );

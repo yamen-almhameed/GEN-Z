@@ -51,9 +51,9 @@ class MyApp1 extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment
                           .spaceBetween, // To evenly space the fields
                       children: [
-                        Expanded(child: Txtfiled(label: "First Name")),
+                        const Expanded(child: Txtfiled(label: "First Name")),
                         SizedBox(width: width * 0.02),
-                        Expanded(
+                        const Expanded(
                             child: Txtfiled(
                           label: "Last Name",
                           text: "'Please enter your Last name'",
@@ -233,7 +233,7 @@ class MyApp1 extends StatelessWidget {
 
                     ElevatedButton(
                       onPressed: () {
-                        Get.to(Org());
+                        Get.to(const Org());
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,

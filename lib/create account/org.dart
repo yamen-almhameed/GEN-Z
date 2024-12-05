@@ -121,18 +121,18 @@ class OrgRegistrationForm extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Organization Name Field
-                Txtfiled(
+                const Txtfiled(
                   label: "Organization Name",
-                  size: const Size(300, 50),
+                  size: Size(300, 50),
                   text: "please enter organization name",
                 ),
 
                 const SizedBox(height: 20),
 
                 // Email Address
-                Txtfiled(
+                const Txtfiled(
                   label: "Email Address",
-                  size: const Size(300, 50),
+                  size: Size(300, 50),
                   text: "Please enter an email address",
                 ),
 
@@ -165,9 +165,9 @@ class OrgRegistrationForm extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Password Field
-                Txtfiled(
+                const Txtfiled(
                   label: "Password",
-                  size: const Size(300, 50),
+                  size: Size(300, 50),
                   text: "Please enter a password",
                 ),
 

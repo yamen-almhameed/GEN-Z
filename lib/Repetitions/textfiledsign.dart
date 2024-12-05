@@ -7,47 +7,41 @@ class Textfiledsign extends StatelessWidget {
   final bool pass;
 
   const Textfiledsign({
-    Key? key,
-    this.label = "Email",
-    this.size = const Size(200, 50),
+    super.key,
+    this.label = "Name Organistion",
+    this.size = const Size(250, 50),
     this.text = "Please enter your first name",
     this.pass = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: size.width,
       height: size.height,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        decoration: BoxDecoration(
-          color: const Color(0xFF9386a1), // لون الخلفية
-          borderRadius: BorderRadius.circular(29), // الحواف
-        ),
-        child: TextFormField(
-          obscureText: pass, // لإخفاء النص إذا كان كلمة مرور
-          autofillHints: [AutofillHints.email], // خاصية الملء التلقائي
+      child: TextFormField(
           decoration: InputDecoration(
-            hintText: label, // النص التوضيحي
-            hintStyle: const TextStyle(color: Colors.grey), // لون النص التوضيحي
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-            border: InputBorder.none, // إزالة الحدود الافتراضية
-          ),
+              prefixIcon: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+              ),
+              hintText: label,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              )),
           validator: (value) {
-            // تحقق من المدخلات
-            if (value == null || value.isEmpty) {
-              return text.isNotEmpty ? text : 'This field is required';
-            }
             return null;
-          },
-          onChanged: (value) {
-            // قم بإضافة المنطق المطلوب هنا
-            print("Input value: $value");
-          },
-        ),
-      ),
+          }
+          //   // تحقق من المدخلات
+          //   if (value == null || value.isEmpty) {
+          //     return text.isNotEmpty ? text : 'This field is required';
+          //   }
+          //   return null;
+          // },
+          //   onChanged: (value) {
+          //     // قم بإضافة المنطق المطلوب هنا
+          //     print("Input value: $value");
+          //   },
+          ),
     );
   }
 }
