@@ -59,9 +59,6 @@ class BtnsSet extends StatelessWidget {
                 iconColor: Color(0xffB978B3),
                 icon: Icons.health_and_safety,
                 btnName: "Health        "),
-            SizedBox(
-              width: 20,
-            ),
             FilterEventsBtn(
                 iconColor: Color(0xff176824),
                 icon: Icons.grass,

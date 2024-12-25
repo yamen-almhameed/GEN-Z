@@ -1,31 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_application_99/Getx/Binding.dart';
-import 'package:flutter_application_99/Getx/controllview.dart';
-import 'package:flutter_application_99/Repetitions/grawer__list.dart';
-import 'package:flutter_application_99/SetProfilePicture.dart';
-import 'package:flutter_application_99/controll_home.dart';
-import 'package:flutter_application_99/org_reg.dart';
-import 'package:flutter_application_99/test_add_updata.dart';
-import 'package:flutter_application_99/user_home.dart';
-import 'package:flutter_application_99/Loginuser.dart';
-import 'package:flutter_application_99/filter.dart';
-import 'package:flutter_application_99/user_reg.dart';
-import 'package:flutter_application_99/user_profile.dart';
-import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_application_99/Getx/Binding.dart';
+import 'package:flutter_application_99/Loginuser.dart';
+import 'package:flutter_application_99/Repetitions/theme_service.dart';
+import 'package:flutter_application_99/admin/controll_admin.dart';
+import 'package:flutter_application_99/admin/delete_member.dart';
+import 'package:flutter_application_99/controll_home.dart';
+import 'package:flutter_application_99/widget_Org/control_home.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(
-    url: 'https://ytphxgjkdgxnxruyvabg.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0cGh4Z2prZGd4bnhydXl2YWJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI5MDA5NzAsImV4cCI6MjA0ODQ3Njk3MH0.w0kLk6umPbLzIeTCBXZkCkkUXCsaCxt7aQ2GCALqxlw',
-  );
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: const FirebaseOptions(
@@ -37,26 +27,95 @@ Future<void> main() async {
   );
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode, // Enable DevicePreview only in debug mode
+      enabled: !kReleaseMode,
       builder: (context) => const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
+
+  Future<Widget> determineUserHome() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return CreateUser(); // إذا لم يكن هناك مستخدم مسجل الدخول
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      final orgDoc = await FirebaseFirestore.instance
+          .collection('Orgnaization')
+          .doc(user.uid)
+          .get();
+
+      if (orgDoc.exists) {
+        await prefs.setString('userType', 'organization');
+        return ControllHomeOrg(); // إذا كان المستخدم في مجموعة Organization
+      }
+
+      // تحقق من أن المستخدم هو في Users
+      final userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user.uid)
+          .get();
+
+      if (userDoc.exists) {
+        // حفظ حالة User في SharedPreferences
+        await prefs.setString('userType', 'user');
+        return controll_home(); // إذا كان المستخدم في مجموعة Users
+      }
+    } catch (e) {
+      debugPrint('Error fetching user data: $e');
+    }
+
+    return CreateUser(); // إذا لم يكن في أي من المجموعات
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeService().lightTheme,
+      darkTheme: ThemeService().darkTheme,
+      themeMode: ThemeService().getThemeMode(),
       debugShowCheckedModeBanner: false,
       initialBinding: InitialBinding(),
-      home: Scaffold(
-        body: CreateUser(),
+      home: FutureBuilder<Widget>(
+        future: determineUserHome(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (snapshot.hasError) {
+            return const Scaffold(
+              body: Center(
+                child: Text('حدث خطأ أثناء تحميل البيانات.'),
+              ),
+            );
+          }
+          if (!snapshot.hasData || snapshot.data == null) {
+            return const Scaffold(
+              body: Center(
+                child: Text('لا توجد بيانات متاحة.'),
+              ),
+            );
+          }
+          return snapshot
+              .data!; // إذا كانت البيانات جاهزة، يتم إرجاع الـ Widget المناسب
+        },
       ),
-      theme: ThemeData(
-        fontFamily: 'SourceSans',
-      ),
+      getPages: [
+        GetPage(name: '/CreateUser', page: () => CreateUser()),
+        GetPage(name: '/controll_home', page: () => controll_home()),
+        GetPage(name: '/ControllHomeOrg', page: () => ControllHomeOrg()),
+        GetPage(name: '/ControllHomeadmin', page: () => ControllHomeadmin()),
+      ],
     );
   }
 }
