@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_99/Getx/Binding.dart';
 import 'package:flutter_application_99/Loginuser.dart';
 import 'package:flutter_application_99/Repetitions/theme_service.dart';
+import 'package:flutter_application_99/admin/DisplayOrg_admin.dart';
 import 'package:flutter_application_99/admin/controll_admin.dart';
 import 'package:flutter_application_99/admin/delete_member.dart';
 import 'package:flutter_application_99/controll_home.dart';
@@ -63,8 +64,16 @@ class MyApp extends StatelessWidget {
 
       if (userDoc.exists) {
         // حفظ حالة User في SharedPreferences
-        await prefs.setString('userType', 'user');
+        await prefs.setString('userType', 'User');
         return controll_home(); // إذا كان المستخدم في مجموعة Users
+      }
+      final adminDoc = await FirebaseFirestore.instance
+          .collection('Admin')
+          .doc(user.uid)
+          .get();
+      if (adminDoc.exists) {
+        await prefs.setString('userType', 'Admin');
+        return ControllHomeadmin();
       }
     } catch (e) {
       debugPrint('Error fetching user data: $e');
@@ -106,8 +115,7 @@ class MyApp extends StatelessWidget {
               ),
             );
           }
-          return snapshot
-              .data!; // إذا كانت البيانات جاهزة، يتم إرجاع الـ Widget المناسب
+          return snapshot.data!;
         },
       ),
       getPages: [

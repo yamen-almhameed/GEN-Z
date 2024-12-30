@@ -222,47 +222,65 @@ class MemberScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon:
-                                          Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () async {
-                                        try {
-                                          // استرجاع المؤسسة التي تخص المستخدم من مجموعة Events
-                                          QuerySnapshot querySnapshot2 =
+                                        icon: Icon(Icons.delete,
+                                            color: Colors.red),
+                                        onPressed: () async {
+                                          try {
+                                            var orgDataList = controller
+                                                .orgData.value
+                                                .toList();
+                                            final Myevent = orgDataList.first;
+
+                                            var eventSnapshot =
+                                                await FirebaseFirestore.instance
+                                                    .collection('events')
+                                                    .where('eventid',
+                                                        isEqualTo:
+                                                            event.eventid)
+                                                    .get();
+
+                                            if (eventSnapshot.docs.isNotEmpty) {
+                                              var eventDoc =
+                                                  eventSnapshot.docs.first;
                                               await FirebaseFirestore.instance
                                                   .collection('events')
-                                                  .where('userId',
-                                                      isEqualTo: userId)
-                                                  .get();
+                                                  .doc(eventDoc.id)
+                                                  .delete();
+                                              var orgEventSnapshot =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'Orgnaization')
+                                                      .doc(Myevent.userid)
+                                                      .get(); // الحصول على مستند المنظمة
 
-                                          await querySnapshot2
-                                              .docs.first.reference
-                                              .delete();
+                                              if (orgEventSnapshot.exists) {
+                                                var orgEventDoc = orgEventSnapshot
+                                                        .data()?['My_Events'] ??
+                                                    {}; // الوصول إلى الـ Map داخل المستند
 
-                                          var eventId = querySnapshot2
-                                              .docs.first['My_Events'].first;
-                                          QuerySnapshot querySnapshot3 =
-                                              await FirebaseFirestore.instance
-                                                  .collection('Orgnaization')
-                                                  .where('My_Events.eventid',
-                                                      isEqualTo: eventId)
-                                                  .get();
-
-                                          // تأكد من وجود الـ eventId في My_Events ثم حذفه من المصفوفة
-                                          await querySnapshot3
-                                              .docs.first.reference
-                                              .update({
-                                            'My_Events':
-                                                FieldValue.arrayRemove([
-                                              {
-                                                'eventid': eventId
-                                              } // تحديد الـ Map الذي يحتوي على eventid
-                                            ])
-                                          });
-                                        } catch (e) {
-                                          print('Error deleting event: $e');
-                                        }
-                                      },
-                                    ),
+                                                if (orgEventDoc
+                                                    .containsKey(eventDoc.id)) {
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'Orgnaization')
+                                                      .doc(Myevent.userid)
+                                                      .update({
+                                                    'My_Events.${eventDoc.id}':
+                                                        FieldValue
+                                                            .delete() // حذف الحدث من الـ Map
+                                                  });
+                                                }
+                                              }
+                                              Get.snackbar("Success",
+                                                  "Event deleted successfully");
+                                            }
+                                          } catch (e) {
+                                            print(
+                                                'Error deleting the first event: $e');
+                                          }
+                                        }),
                                   ]),
                             ),
                           ],
