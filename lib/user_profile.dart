@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_99/Getx/EventController.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -12,6 +13,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  EventController controller = Get.put(EventController());
   String? _imageUrl;
   var titles = <String>[].obs;
   final RxInt selectedIndex = (-1).obs;
@@ -69,22 +71,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
       User? currentUser = _auth.currentUser;
       if (currentUser != null) {
         String uid = currentUser.uid;
-        // حذف الحدث من قاعدة بيانات Firebase
-        await _firestore
+
+        // حذف الحدث من مجموعة المستخدم
+        DocumentReference userEventDoc = _firestore
             .collection('Users')
             .doc(uid)
             .collection('events')
-            .doc(eventId)
-            .delete();
+            .doc(eventId);
 
-        setState(() {
-          titles.removeWhere((title) =>
-              events.firstWhere((event) => event['id'] == eventId)['title'] ==
-              title);
-          events.removeWhere((event) => event['id'] == eventId);
-        });
+        var userEventSnapshot = await userEventDoc.get();
+        if (userEventSnapshot.exists) {
+          // حذف الحدث من مجموعة المستخدم
+          await userEventDoc.delete();
 
-        fetchEventsData();
+          setState(() {
+            titles.removeWhere((title) =>
+                events.firstWhere((event) => event['id'] == eventId)['title'] ==
+                title);
+            events.removeWhere((event) => event['id'] == eventId);
+          });
+
+          // تحديث مجموعة الأحداث العامة
+          final querySnapshot = await FirebaseFirestore.instance
+              .collection('events') // تعديل حسب الهيكل
+              .where('eventid', isEqualTo: eventId)
+              .get();
+
+          if (querySnapshot.docs.isNotEmpty) {
+            for (var doc in querySnapshot.docs) {
+              await doc.reference.update({
+                'registerd_user_reg':
+                    (doc.data()['registerd_user_reg'] ?? 0) > 0
+                        ? (doc.data()['registerd_user_reg'] ?? 0) - 1
+                        : 0, // التأكد من أن القيمة لا تصبح سالبة
+                'registered_users_list': FieldValue.arrayRemove([uid]),
+              });
+            }
+          } else {
+            print("No documents found with eventid equal to $eventId");
+          }
+
+          fetchEventsData();
+          print("Event deleted successfully.");
+        } else {
+          print("Event not found for this user.");
+        }
       }
     } catch (e) {
       print("Error deleting event: $e");
@@ -251,7 +282,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               },
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8),
                                 width: isSelected
                                     ? screenWidth * 0.6
                                     : screenWidth * 0.5,

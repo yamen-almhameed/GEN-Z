@@ -1,21 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_99/admin/DisplayOrg_admin.dart';
 import 'package:flutter_application_99/view_model/Event_model.dart';
 import 'package:get/get.dart';
 
 import '../Getx/EventController.dart';
 
-class MemberScreen extends StatelessWidget {
-  final EventController controller = Get.put(EventController());
-  final eventdata = <EventModel>[].obs; // مراقبة قائمة الأحداث
-
+class MemberScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    final String userId = Get.arguments as String;
-    final screenWidth = MediaQuery.of(context).size.width;
+  State<MemberScreen> createState() => _MemberScreenState();
+}
 
-    controller.fetchOrganizationData(userId);
+class _MemberScreenState extends State<MemberScreen> {
+  final EventController controller = Get.put(EventController());
 
+  final eventdata = <EventModel>[].obs;
+  // مراقبة قائمة الأحداث
+  @override
+  void initState() {
+    super.initState();
     void fetchEventsByOrgId(String userId) async {
       try {
         print('Fetching data for userId: $userId');
@@ -40,7 +43,16 @@ class MemberScreen extends StatelessWidget {
       }
     }
 
+    final String userId = Get.arguments as String;
     fetchEventsByOrgId(userId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String userId = Get.arguments as String;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    controller.fetchOrganizationData(userId);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -49,6 +61,12 @@ class MemberScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(Icons.arrow_back),
+            ),
             Obx(() {
               var orgDataList = controller.orgData.value.toList();
               if (orgDataList.isEmpty) {
@@ -59,24 +77,24 @@ class MemberScreen extends StatelessWidget {
               final Myevent = orgDataList.first;
 
               return Padding(
-                padding: const EdgeInsets.only(top: 50),
+                padding: const EdgeInsets.only(top: 16.0),
                 child: Container(
-                  height: 130,
-                  padding: EdgeInsets.all(16),
+                  height: 120, // تقليل الارتفاع
+                  padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.blue[50],
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CircleAvatar(
                         backgroundImage: AssetImage(
                           'assets/images/Image/Polygon 1.png',
                         ),
-                        radius: 50,
+                        radius: 45,
                       ),
-                      SizedBox(width: 16),
+                      SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -89,11 +107,13 @@ class MemberScreen extends StatelessWidget {
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
+                              overflow:
+                                  TextOverflow.ellipsis, // منع النص من الخروج
                             ),
-                            SizedBox(height: 8),
+                            SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.error_outline, size: 20),
+                                const Icon(Icons.error_outline, size: 18),
                                 const SizedBox(width: 2),
                                 Text(
                                   "Page · Non-profit organization",
@@ -104,35 +124,42 @@ class MemberScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 8),
+                            SizedBox(height: 4),
                             Row(
                               children: [
                                 const Icon(Icons.phone, size: 16),
                                 const SizedBox(width: 4),
-                                Text(
-                                  Myevent.phone.toString(),
-                                  style: TextStyle(color: Color(0xff7c142f)),
+                                Flexible(
+                                  // استخدم Flexible لضبط عرض الرقم
+                                  child: Text(
+                                    Myevent.phone.toString(),
+                                    style: TextStyle(color: Color(0xff7c142f)),
+                                    overflow: TextOverflow
+                                        .ellipsis, // منع النص من الخروج
+                                  ),
                                 ),
+                                SizedBox(width: 8),
                                 InkWell(
                                   onTap: () {
-                                    // Handle delete action
+                                    var eventId = Myevent.userid;
+                                    Get.to(DisplayorgAdmin(),
+                                        arguments: eventId);
                                   },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: screenWidth * 0.1),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: const Color(0xff3d4349)),
-                                        borderRadius: BorderRadius.circular(18),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
                                         color: const Color(0xff3d4349),
                                       ),
-                                      child: const Text(
-                                        "Delete",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
+                                      borderRadius: BorderRadius.circular(18),
+                                      color: const Color(0xff3d4349),
+                                    ),
+                                    child: const Text(
+                                      "Delete Organization",
+                                      style: TextStyle(color: Colors.white),
+                                      textAlign: TextAlign
+                                          .center, // جعل النص في المنتصف
                                     ),
                                   ),
                                 ),
@@ -258,6 +285,9 @@ class MemberScreen extends StatelessWidget {
                                                 var orgEventDoc = orgEventSnapshot
                                                         .data()?['My_Events'] ??
                                                     {}; // الوصول إلى الـ Map داخل المستند
+                                                await controller
+                                                    .deleteEventFromAllUsers(
+                                                        event.eventid);
 
                                                 if (orgEventDoc
                                                     .containsKey(eventDoc.id)) {
@@ -273,6 +303,7 @@ class MemberScreen extends StatelessWidget {
                                                   });
                                                 }
                                               }
+
                                               Get.snackbar("Success",
                                                   "Event deleted successfully");
                                             }

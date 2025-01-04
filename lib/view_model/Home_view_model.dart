@@ -35,10 +35,10 @@ class HomeViewModel extends GetxController {
         currentScreen = const EventsScreen();
         break;
       case 2:
-        currentScreen = DisplayOrg();
+        currentScreen = DisplayOrg_user();
         break;
       case 3:
-        currentScreen = const ProfileScreen();
+        currentScreen =  ProfileScreen();
         break;
       default:
         currentScreen = Home();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_99/Getx/EventController.dart';
+import 'package:flutter_application_99/profileorguser.dart';
 import 'package:flutter_application_99/view_model/org_profile.dart';
 import 'package:flutter_application_99/widget_Org/u_profile_org.dart';
 import 'package:get/get.dart';
@@ -17,20 +18,10 @@ class DisplayOrg_user extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromRGBO(136, 124, 176, 0.17),
-                Color.fromRGBO(194, 131, 27, 0.15),
-                Color.fromRGBO(251, 133, 0, 0.18),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -67,7 +58,11 @@ class DisplayOrg_user extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 40.0),
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                var eventId = orgs.userid;
+                                Get.to(OrgProfileuser(userId: eventId));
+                                print(eventId);
+                              },
                               child: Container(
                                 height: screenHeight * 0.15,
                                 width: screenWidth * 0.9,
@@ -100,7 +95,7 @@ class DisplayOrg_user extends StatelessWidget {
                                             ),
                                           ),
                                           const SizedBox(height: 8),
-                                          const Row(
+                                          Row(
                                             children: [
                                               CircleAvatar(
                                                 radius: 10,
@@ -112,11 +107,12 @@ class DisplayOrg_user extends StatelessWidget {
                                               ),
                                               SizedBox(width: 8),
                                               Text(
-                                                'Non-profit-organization',
+                                                orgs.url,
                                                 style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Color(0xFF78797d),
-                                                ),
+                                                    fontSize: 14,
+                                                    color: Color(0xFF78797d),
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
                                               ),
                                             ],
                                           ),

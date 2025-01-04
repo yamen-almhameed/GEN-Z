@@ -13,18 +13,22 @@ class controll_home extends StatelessWidget {
     return GetBuilder<HomeViewModel>(
       init: HomeViewModel(),
       builder: (controller) => Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         body: controller.currentScreen,
-        bottomNavigationBar: bottomNavigationBar(),
+        bottomNavigationBar: bottomNavigationBar(context), // Pass context here
       ),
     );
   }
 }
 
-Widget bottomNavigationBar() {
+// Accept context as a parameter
+Widget bottomNavigationBar(BuildContext context) {
   return GetBuilder<HomeViewModel>(
     builder: (controller) => BottomNavigationBar(
+      backgroundColor: Theme.of(context).colorScheme.primary, // Now this works
       items: [
         BottomNavigationBarItem(
+          backgroundColor: Theme.of(context).colorScheme.primary,
           activeIcon: const Padding(
             padding: EdgeInsets.only(top: 25),
             child: Text("Home"),
@@ -32,10 +36,9 @@ Widget bottomNavigationBar() {
           label: "",
           icon: Padding(
             padding: const EdgeInsets.only(top: 20),
-            child: Image.asset(
-              'assets/images/Image/home-05.png',
-              fit: BoxFit.contain,
-              width: 30,
+            child: Icon(
+              Icons.home,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -47,10 +50,9 @@ Widget bottomNavigationBar() {
           label: "",
           icon: Padding(
             padding: const EdgeInsets.only(top: 20),
-            child: Image.asset(
-              'assets/images/Image/Calendar_duotone_line.png',
-              fit: BoxFit.contain,
-              width: 30,
+            child: Icon(
+              Icons.event,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -62,10 +64,9 @@ Widget bottomNavigationBar() {
           label: "",
           icon: Padding(
             padding: const EdgeInsets.only(top: 20),
-            child: Image.asset(
-              'assets/images/Image/server-02.png',
-              fit: BoxFit.contain,
-              width: 30,
+            child: Icon(
+              Icons.query_builder_sharp,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -77,22 +78,19 @@ Widget bottomNavigationBar() {
           label: "",
           icon: Padding(
             padding: const EdgeInsets.only(top: 20),
-            child: Image.asset(
-              'assets/images/Image/User_scan_duotone_line.png',
-              fit: BoxFit.contain,
-              width: 30,
+            child: Icon(
+              Icons.person,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
       ],
       currentIndex: controller.navigatorValue,
       onTap: (index) {
-        controller
-            .changeSelectedValue(index); // تحديث الشاشة عند الضغط على العنصر
+        controller.changeSelectedValue(index); // Update screen on tap
       },
       elevation: 0,
       selectedItemColor: Colors.black,
-      backgroundColor: Colors.transparent, // التأكد من أن التدرج يظهر
     ),
   );
 }
