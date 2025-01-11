@@ -7,7 +7,6 @@ import 'package:flutter_application_99/components/Reg_User_List.dart';
 import 'package:flutter_application_99/components/Reg_user_Textfiled.dart';
 import 'package:flutter_application_99/reg_event_user.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 
 class UserReg extends GetView<Authviewmodel> {
   final TextEditingController countryController = TextEditingController();

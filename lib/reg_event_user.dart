@@ -335,7 +335,7 @@ class _EventDetailsState extends State<EventDetails> {
                               backgroundColor: Colors.grey[300],
                               child: Text(
                                 registerd_user_reg,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
                                 ),

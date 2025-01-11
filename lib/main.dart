@@ -36,7 +36,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   Future<Widget> determineUserHome() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
 
       if (orgDoc.exists) {
         await prefs.setString('userType', 'organization');
-        return ControllHomeOrg(); // إذا كان المستخدم في مجموعة Organization
+        return const ControllHomeOrg(); // إذا كان المستخدم في مجموعة Organization
       }
 
       // تحقق من أن المستخدم هو في Users
@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
       if (userDoc.exists) {
         // حفظ حالة User في SharedPreferences
         await prefs.setString('userType', 'User');
-        return controll_home(); // إذا كان المستخدم في مجموعة Users
+        return const controll_home(); // إذا كان المستخدم في مجموعة Users
       }
       final adminDoc = await FirebaseFirestore.instance
           .collection('Admin')
@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
           .get();
       if (adminDoc.exists) {
         await prefs.setString('userType', 'Admin');
-        return ControllHomeadmin();
+        return const ControllHomeadmin();
       }
     } catch (e) {
       debugPrint('Error fetching user data: $e');
@@ -121,9 +121,9 @@ class MyApp extends StatelessWidget {
       ),
       getPages: [
         GetPage(name: '/CreateUser', page: () => CreateUser()),
-        GetPage(name: '/controll_home', page: () => controll_home()),
-        GetPage(name: '/ControllHomeOrg', page: () => ControllHomeOrg()),
-        GetPage(name: '/ControllHomeadmin', page: () => ControllHomeadmin()),
+        GetPage(name: '/controll_home', page: () => const controll_home()),
+        GetPage(name: '/ControllHomeOrg', page: () => const ControllHomeOrg()),
+        GetPage(name: '/ControllHomeadmin', page: () => const ControllHomeadmin()),
       ],
     );
   }

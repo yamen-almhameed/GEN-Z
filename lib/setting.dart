@@ -204,13 +204,13 @@ class SettingsTextField extends StatelessWidget {
               enabled: !disabledBorder,
               onChanged: (newValue) => value.value = newValue,
               decoration: InputDecoration(
-                border: UnderlineInputBorder(
+                border: const UnderlineInputBorder(
                   borderSide: BorderSide(color: borderColor),
                 ),
-                enabledBorder: UnderlineInputBorder(
+                enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: borderColor),
                 ),
-                focusedBorder: UnderlineInputBorder(
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: borderColor, width: 2),
                 ),
                 disabledBorder: UnderlineInputBorder(
@@ -274,13 +274,13 @@ class LanguageField extends StatelessWidget {
                 if (newValue != null) value.value = newValue;
               },
               decoration: InputDecoration(
-                border: UnderlineInputBorder(
+                border: const UnderlineInputBorder(
                   borderSide: BorderSide(color: borderColor),
                 ),
-                enabledBorder: UnderlineInputBorder(
+                enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: borderColor),
                 ),
-                focusedBorder: UnderlineInputBorder(
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: borderColor, width: 2),
                 ),
                 contentPadding: EdgeInsets.symmetric(

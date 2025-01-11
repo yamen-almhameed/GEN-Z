@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class u_OrgProfile extends StatefulWidget {
   final String userId;
-  u_OrgProfile({super.key, required this.userId});
+  const u_OrgProfile({super.key, required this.userId});
 
   @override
   State<u_OrgProfile> createState() => _OrgProfileState();
@@ -51,14 +51,14 @@ class _OrgProfileState extends State<u_OrgProfile> {
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Row(
                     children: [
                       Padding(
                         padding: EdgeInsets.only(left: screenWidth * 0.05),
-                        child: CircleAvatar(
+                        child: const CircleAvatar(
                           radius: 80,
-                          backgroundImage: const AssetImage(
+                          backgroundImage: AssetImage(
                               'assets/images/Image/Polygon 1.png'),
                         ),
                       ),

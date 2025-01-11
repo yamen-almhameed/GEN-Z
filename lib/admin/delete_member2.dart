@@ -80,9 +80,9 @@ class MemberScreen2 extends StatelessWidget {
                         verticalInside: BorderSide.none,
                       ),
                       columnWidths: const {
-                        0: const FlexColumnWidth(1),
-                        1: const FlexColumnWidth(2),
-                        2: const FlexColumnWidth(1),
+                        0: FlexColumnWidth(1),
+                        1: FlexColumnWidth(2),
+                        2: FlexColumnWidth(1),
                       },
                       children: [
                         _buildTableHeader(),

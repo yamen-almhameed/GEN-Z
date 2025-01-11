@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_application_99/Getx/EventController.dart';
 import 'package:flutter_application_99/profileorguser.dart';
 import 'package:flutter_application_99/view_model/org_profile.dart';
@@ -18,10 +19,20 @@ class DisplayOrg_user extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primary,
         body: Container(
           width: double.infinity,
           height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromRGBO(136, 124, 176, 0.17),
+                Color.fromRGBO(194, 131, 27, 0.15),
+                Color.fromRGBO(251, 133, 0, 0.18),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -97,22 +108,44 @@ class DisplayOrg_user extends StatelessWidget {
                                           const SizedBox(height: 8),
                                           Row(
                                             children: [
-                                              CircleAvatar(
+                                              const CircleAvatar(
                                                 radius: 10,
                                                 child: Icon(
-                                                  Icons.error_outline,
+                                                  Icons.location_on,
                                                   color: Color(0xFF78797d),
                                                   size: 16,
                                                 ),
                                               ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                orgs.url,
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Color(0xFF78797d),
-                                                    overflow:
-                                                        TextOverflow.ellipsis),
+                                              const SizedBox(width: 8),
+                                              Flexible(
+                                                child: InkWell(
+                                                  child: Text(
+                                                    orgs.url,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Color(0xFF78797d),
+                                                      overflow: TextOverflow
+                                                          .ellipsis, // لإضافة النقاط عند التجاوز
+                                                    ),
+                                                    maxLines:
+                                                        1, // تحديد عدد السطور
+                                                  ),
+                                                  onLongPress: () {
+                                                    Clipboard.setData(
+                                                        ClipboardData(
+                                                            text: orgs.url));
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            'تم نسخ الرابطة'),
+                                                        duration: Duration(
+                                                            seconds: 2),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
                                               ),
                                             ],
                                           ),

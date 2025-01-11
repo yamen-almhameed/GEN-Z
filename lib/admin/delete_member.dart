@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import '../Getx/EventController.dart';
 
 class MemberScreen extends StatefulWidget {
+  const MemberScreen({super.key});
+
   @override
   State<MemberScreen> createState() => _MemberScreenState();
 }
@@ -65,7 +67,7 @@ class _MemberScreenState extends State<MemberScreen> {
               onPressed: () {
                 Get.back();
               },
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
             ),
             Obx(() {
               var orgDataList = controller.orgData.value.toList();
@@ -80,7 +82,7 @@ class _MemberScreenState extends State<MemberScreen> {
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Container(
                   height: 120, // تقليل الارتفاع
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.blue[50],
                     borderRadius: BorderRadius.circular(15),
@@ -88,13 +90,13 @@ class _MemberScreenState extends State<MemberScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         backgroundImage: AssetImage(
                           'assets/images/Image/Polygon 1.png',
                         ),
                         radius: 45,
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -110,11 +112,11 @@ class _MemberScreenState extends State<MemberScreen> {
                               overflow:
                                   TextOverflow.ellipsis, // منع النص من الخروج
                             ),
-                            SizedBox(height: 4),
-                            Row(
+                            const SizedBox(height: 4),
+                            const Row(
                               children: [
-                                const Icon(Icons.error_outline, size: 18),
-                                const SizedBox(width: 2),
+                                Icon(Icons.error_outline, size: 18),
+                                SizedBox(width: 2),
                                 Text(
                                   "Page · Non-profit organization",
                                   style: TextStyle(
@@ -124,7 +126,7 @@ class _MemberScreenState extends State<MemberScreen> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Row(
                               children: [
                                 const Icon(Icons.phone, size: 16),
@@ -133,12 +135,12 @@ class _MemberScreenState extends State<MemberScreen> {
                                   // استخدم Flexible لضبط عرض الرقم
                                   child: Text(
                                     Myevent.phone.toString(),
-                                    style: TextStyle(color: Color(0xff7c142f)),
+                                    style: const TextStyle(color: Color(0xff7c142f)),
                                     overflow: TextOverflow
                                         .ellipsis, // منع النص من الخروج
                                   ),
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 InkWell(
                                   onTap: () {
                                     var eventId = Myevent.userid;
@@ -173,7 +175,7 @@ class _MemberScreenState extends State<MemberScreen> {
                 ),
               );
             }),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             const Text(
               'Event List',
               style: TextStyle(
@@ -181,7 +183,7 @@ class _MemberScreenState extends State<MemberScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Obx(() {
               if (eventdata.isEmpty) {
                 return const Center(
@@ -194,7 +196,7 @@ class _MemberScreenState extends State<MemberScreen> {
                   scrollDirection: Axis.vertical,
                   child: Table(
                     // عرض الأعمدة حسب المحتوى
-                    border: TableBorder(
+                    border: const TableBorder(
                       top: BorderSide(color: Color(0xffe3e3e3), width: 2),
                       bottom: BorderSide(color: Color(0xffe3e3e3), width: 2),
                       horizontalInside:
@@ -249,7 +251,7 @@ class _MemberScreenState extends State<MemberScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                        icon: Icon(Icons.delete,
+                                        icon: const Icon(Icons.delete,
                                             color: Colors.red),
                                         onPressed: () async {
                                           try {
@@ -316,7 +318,7 @@ class _MemberScreenState extends State<MemberScreen> {
                             ),
                           ],
                         );
-                      }).toList(),
+                      }),
                     ],
                   ),
                 ),
